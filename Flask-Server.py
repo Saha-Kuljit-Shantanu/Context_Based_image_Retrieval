@@ -1,14 +1,32 @@
 from flask import Flask, send_from_directory,request,jsonify,render_template
 from werkzeug.utils import secure_filename
 
-from histogram import Image_Histogram_Extraction as feature_extractor_0
-from histogram import Get_Histogram_Distance_Sorted as image_retriever_0
+# from histogram import Image_Histogram_Extraction as feature_extractor_0
+# from histogram import Get_Histogram_Distance_Sorted as image_retriever_0
 
-from coweighed_semantic_convolutional_feature_after_pca import Image_Feature_Extraction as feature_extractor_1a
-from coweighed_semantic_convolutional_feature_after_pca import Get_Euclidian_Distance_Sorted as image_retriever_1a
+from coweighed_semantic_convolutional_feature import Image_Feature_Extraction as feature_extractor_1
+from coweighed_semantic_convolutional_feature import Get_Euclidian_Distance_Sorted as image_retriever_1
 
-from coweighed_semantic_convolutional_feature_before_pca import Image_Feature_Extraction as feature_extractor_1b
-from coweighed_semantic_convolutional_feature_before_pca import Get_Euclidian_Distance_Sorted as image_retriever_1b
+# from coweighed_semantic_convolutional_feature import Image_Feature_Extraction as feature_extractor_1b
+# from coweighed_semantic_convolutional_feature_before_pca import Get_Euclidian_Distance_Sorted as image_retriever_1b
+
+from coweighed_semantic_convolutional_feature_38p import Image_Feature_Extraction as feature_extractor_2
+from coweighed_semantic_convolutional_feature_38p import Get_Euclidian_Distance_Sorted as image_retriever_2
+
+from coweighed_semantic_convolutional_feature_44p_GS import Image_Feature_Extraction as feature_extractor_2_gs
+from coweighed_semantic_convolutional_feature_44p_GS import Get_Euclidian_Distance_Sorted as image_retriever_2_gs
+
+from coweighed_semantic_convolutional_feature_50p import Image_Feature_Extraction as feature_extractor_50
+from coweighed_semantic_convolutional_feature_50p import Get_Euclidian_Distance_Sorted as image_retriever_50
+
+# from contrastive_weight_aggregation_histogram import Image_Feature_Extraction as feature_extractor_faulty
+# from contrastive_weight_aggregation_histogram import Get_Euclidian_Distance_Sorted as image_retriever_faulty
+
+from coweighed_semantic_convolutional_feature_70p import Image_Feature_Extraction as feature_extractor_70
+from coweighed_semantic_convolutional_feature_70p import Get_Euclidian_Distance_Sorted as image_retriever_70
+
+
+
 import os
 #import os
 
@@ -60,35 +78,49 @@ def upload_file():
 
         print(algorithm)
 
-        if algorithm == "Histogram":
+        # if algorithm == "Histogram":
 
             
 
-            my_feature_vector = feature_extractor_0.extract_histogram_vector(file)  
+        #     my_feature_vector = feature_extractor_0.extract_histogram_vector(file)  
 
-            print(my_feature_vector)
+        #     print(my_feature_vector)
         
-            my_feature_list = image_retriever_0.get_histogram_distance_sorted(my_feature_vector, dataset) 
+        #     my_feature_list = image_retriever_0.get_histogram_distance_sorted(my_feature_vector, dataset) 
 
 
 
-        if algorithm == "Coweighed Semantic Convolutional Feature (after PCA whitening)":
+        # if algorithm == "Coweighed Semantic Convolutional Feature (after PCA whitening)":
+
+        #     original_filename = file.filename
+        
+        #     filename = secure_filename(original_filename)
+
+        #     temp_path = os.path.join( 'image-query\\tmp',filename) 
+        
+        #     file.save(temp_path)
+
+        #     num_features, my_feature_vector = feature_extractor_1a.extract_feature_vector(temp_path, dataset)  
+        
+        #     my_feature_list = image_retriever_1a.get_euclidian_distance_sorted(my_feature_vector, num_features, dataset) 
+
+            
+
+        if algorithm == "Coweighed Semantic Convolutional Feature":
 
             original_filename = file.filename
         
             filename = secure_filename(original_filename)
 
             temp_path = os.path.join( 'image-query\\tmp',filename) 
-        
+
             file.save(temp_path)
 
-            num_features, my_feature_vector = feature_extractor_1a.extract_feature_vector(temp_path, dataset)  
+            num_features, my_feature_vector = feature_extractor_1.extract_feature_vector(temp_path, dataset)    
         
-            my_feature_list = image_retriever_1a.get_euclidian_distance_sorted(my_feature_vector, num_features, dataset) 
+            my_feature_list = image_retriever_1.get_euclidian_distance_sorted(my_feature_vector, num_features, dataset) 
 
-            
-
-        if algorithm == "Coweighed Semantic Convolutional Feature (before PCA whitening)":
+        if algorithm == "Coweighed Semantic Convolutional Feature (38%)":
 
             original_filename = file.filename
         
@@ -98,14 +130,66 @@ def upload_file():
 
             file.save(temp_path)
 
-            num_features, my_feature_vector = feature_extractor_1b.extract_feature_vector(temp_path, dataset)    
+            num_features, my_feature_vector = feature_extractor_2.extract_feature_vector(temp_path, dataset)    
         
-            my_feature_list = image_retriever_1b.get_euclidian_distance_sorted(my_feature_vector, num_features, dataset) 
+            my_feature_list = image_retriever_2.get_euclidian_distance_sorted(my_feature_vector, num_features, dataset) 
 
-            
+        if algorithm == "Coweighed Semantic Convolutional Feature with GrayScaling (44%)":
 
+            original_filename = file.filename
         
-    
+            filename = secure_filename(original_filename)
+
+            temp_path = os.path.join( 'image-query\\tmp',filename) 
+
+            file.save(temp_path)
+
+            num_features, my_feature_vector = feature_extractor_2_gs.extract_feature_vector(temp_path, dataset)    
+        
+            my_feature_list = image_retriever_2_gs.get_euclidian_distance_sorted(my_feature_vector, num_features, dataset) 
+   
+        if algorithm == "Coweighed Semantic Convolutional Feature (50%)":
+
+            original_filename = file.filename
+        
+            filename = secure_filename(original_filename)
+
+            temp_path = os.path.join( 'image-query\\tmp',filename) 
+
+            file.save(temp_path)
+
+            num_features, my_feature_vector = feature_extractor_50.extract_feature_vector(temp_path, dataset)    
+        
+            my_feature_list = image_retriever_50.get_euclidian_distance_sorted(my_feature_vector, num_features, dataset) 
+
+        if algorithm == "Coweighed Semantic Convolutional Feature (70%)":
+
+            original_filename = file.filename
+        
+            filename = secure_filename(original_filename)
+
+            temp_path = os.path.join( 'image-query\\tmp',filename) 
+
+            file.save(temp_path)
+
+            num_features, my_feature_vector = feature_extractor_70.extract_feature_vector(temp_path, dataset)    
+        
+            my_feature_list = image_retriever_70.get_euclidian_distance_sorted(my_feature_vector, num_features, dataset) 
+
+        # if algorithm == "Contrastive Weight Aggregation Histogram":
+
+        #     original_filename = file.filename
+        
+        #     filename = secure_filename(original_filename)
+
+        #     temp_path = os.path.join( 'image-query\\tmp',filename) 
+
+        #     file.save(temp_path)
+
+        #     num_features, my_feature_vector = feature_extractor_faulty.extract_feature_vector(temp_path, dataset)    
+        
+        #     my_feature_list = image_retriever_faulty.get_euclidian_distance_sorted(my_feature_vector, num_features, dataset) 
+
         #Return the part of the sorted list to display in front end
 
         my_fragmented_feature_list = my_feature_list[:]
@@ -120,6 +204,11 @@ def upload_file():
 
         return jsonify( {'original_filename': None,
             'filename':  None} )
+
+    # except Exception as e:
+    #     print(f"Error: {e}")
+    #     return jsonify( {'original_filename': None,
+    #              'filename':  None} )
 
     
 

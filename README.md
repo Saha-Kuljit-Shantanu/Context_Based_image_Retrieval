@@ -3,7 +3,7 @@
 **Purpose :** Taking an image as input and retrieve images in a sequence of their distances with the Query image in ascending order for a chosen algorithm ( A little update to the **Image_Query_by_Analysing_Histogram_Distance** repository)
 
 **Data Training :**
-  - Will not be required as the models are pretrained for dataset **paris6k** and **oxford5k**
+  - Will not be required as the models are pretrained by imageNet and fine-tuned for dataset **paris6k** and **oxford5k**
 
 **Dataset Requirements :**
   - The Paris6k images must be kept in the folder **/image-query/public/Paris6k** and the Oxford5k images must be kept in **/image-query/public/Oxford5k** 

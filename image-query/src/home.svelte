@@ -1,6 +1,7 @@
 <script>
 
     //import {myVarList} from '/Image_Query_by_Analysing_histogram/image-query/public/store'
+    import Chart from "chart.js/auto";
     
     let imageInput;
     let my_image_file = ''
@@ -12,16 +13,25 @@
     let currentPage = 1;
     let totalPages;
     let pageInput = currentPage;
+    let folderCounts = {};
+    let chartInstance;
+    let chartVisible = false;
 
 
-    let algorithm = "Histogram";
+
+    let algorithm = "Coweighed Semantic Convolutional Feature";
     let dataset = "Oxford5k";
     let isAlgoOpen = false;
     let isDataOpen = false;
     // let selectedOption = "Select an option";
-    const algorithms = ["Histogram", 
-                        "Coweighed Semantic Convolutional Feature (after PCA whitening)", 
-                        "Coweighed Semantic Convolutional Feature (before PCA whitening)"];
+    const algorithms = [
+                        "Coweighed Semantic Convolutional Feature",
+                        "Coweighed Semantic Convolutional Feature (38%)",
+                        "Coweighed Semantic Convolutional Feature with GrayScaling (44%)",
+                        "Coweighed Semantic Convolutional Feature (50%)",
+                        "Coweighed Semantic Convolutional Feature (70%)",
+                        // "Contrastive Weight Aggregation Histogram"
+                       ];
 
     const datasets = ["Oxford5k", "Paris6k" ];
 
@@ -43,6 +53,72 @@
     // function updateVariableList(newImageValue) {
     //     myVarList.set(newImageValue);
     // }
+
+    //$: countFolders();
+    //$: if (Object.keys(folderCounts).length) drawPieChart();
+
+    function countFolders() {
+        folderCounts = {}; // Reset counts
+        if (imageOutput.length === 0) return;
+
+        imageOutput[currentPage - 1]?.forEach(imageChunk => {
+            imageChunk.forEach(image => {
+                let folderName = image[2].split("/")[0]; // Extract folder name
+                folderCounts[folderName] = (folderCounts[folderName] || 0) + 1;
+            });
+        });
+    }
+
+    function generateChart() {
+        countFolders(); // Update folder counts
+        chartVisible = true; // Show chart
+
+        // Ensure canvas exists
+        setTimeout(() => { 
+            if (!document.getElementById("folderPieChart")) return;
+
+            const ctx = document.getElementById("folderPieChart").getContext("2d");
+
+            // Destroy previous chart to prevent overlap issues
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: "pie",
+                data: {
+                    labels: Object.keys(folderCounts),
+                    datasets: [{
+                        data: Object.values(folderCounts),
+                        backgroundColor: ["red", "blue", "green", "orange", "purple"]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: {
+                                    size: 16 ,// Change this value to increase font size
+                                    weight : 'bold'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            bodyFont: {
+                                size: 14 // Adjust tooltip font size
+                            },
+                            titleFont: {
+                                size: 16 // Adjust tooltip title font size
+                            }
+                        }
+                    }
+
+                }
+            });
+        }, 10); // Small delay to ensure the chart container is updated
+    }
+
 
 
 
@@ -115,6 +191,10 @@
 
     currentPage = input;
     pageInput = currentPage;
+
+    generateChart()
+
+    chartVisible = true;
 
     // window.scrollTo({
     //   top: 0,
@@ -189,6 +269,10 @@
 
 
       imageOutputFlag = 1
+
+      generateChart()
+
+      chartVisible = true;
 
 
     } catch (error) {
@@ -282,6 +366,27 @@
               {/each}
             </div>
           {/if}
+
+    </div>
+
+    <div class="button-holder">
+
+    {#if imageOutputFlag === 1}
+
+        <!-- <button class="upload-btn" on:click={generateChart}>Generate Pie Chart</button> -->
+
+        <!-- Pie Chart (Only Visible When Button Clicked) -->
+
+        {#if chartVisible}
+
+        <div class="chart-container">
+            <canvas id="folderPieChart"></canvas> 
+        </div>
+
+        
+        {/if}
+
+    {/if}
 
     </div>
 
@@ -528,4 +633,11 @@
     /* .dropdown-item-data:hover {
         background-color: #e1e1e1;
     } */
+
+    
+    .chart-container {
+        width: 384px;
+        height: 384px;
+    }
+
 </style>
